@@ -1,3 +1,5 @@
+/// <reference path="../typings.d.ts"/>
+
 var express = require('express');
 import { NextFunction, Request, Response } from "express";
 import MySqlConnectionConfig  from 'knex';
