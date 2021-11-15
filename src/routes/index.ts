@@ -7,7 +7,7 @@ import { TestModel } from '../model/test';
 const testModel = new TestModel();
 
 
-router.get('/', async function (req: Request, res: Response, next: NextFunction) {
+router.get('/ssj', async function (req: Request, res: Response, next: NextFunction) {
   res.send({ ok: true, rows: 'Welcome to RESful Service!!!' });
   // res.render('index', { title: 'Express' });
 });
