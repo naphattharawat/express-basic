@@ -31,19 +31,26 @@ router.post('/', async function (req: Request, res: Response, next: NextFunction
     try {
         const body = req.body;
         if (body.first_name && body.last_name && body.password) {
-            const obj :any = {
-                first_name:body.first_name,
-                last_name:body.last_name,
-                password: CryptoJS.MD5(body.password).toString()
+            const users: any = await usersModel.findUsername(req.db, body.username);
+            if (users.length === 0) {
+                const obj: any = {
+                    first_name: body.first_name,
+                    last_name: body.last_name,
+                    title_id: body.title_id,
+                    username: body.username,
+                    password: CryptoJS.MD5(body.password).toString()
+                }
+                const rs: any = await usersModel.saveUser(req.db, obj);
+                res.send({ ok: true, rows: rs })
+            } else {
+                res.send({ok:false,error:'Username ซ้ำ'});
             }
-            const rs: any = await usersModel.saveUser(req.db, obj);
-            res.send({ ok: true, rows: rs })
         } else {
             res.send({ ok: false, error: 'ไม่พบ parameter' })
         }
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
-        res.send({ ok: false, error: error })
+        res.send({ ok: false, error: error.message })
     }
 });
 

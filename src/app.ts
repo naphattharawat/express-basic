@@ -12,6 +12,7 @@ require('dotenv').config();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var titlesRouter = require('./routes/titles');
+var loginRouter = require('./routes/login');
 
 
 var bodyParser = require('body-parser');
@@ -65,6 +66,7 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/titles', titlesRouter);
+app.use('/login', loginRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {

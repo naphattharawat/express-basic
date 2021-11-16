@@ -7,10 +7,7 @@ export class UsersModel {
         'u.last_name', 'u.title_id', 't.name as title_name')
         .join('titles as t', 't.id', 'u.title_id')
     }
-    // select u.id,u.first_name,u.last_name,u.title_id,
-    // t.name as title_name 
-    // from users as u 
-    // join titles as t on t.id = u.title_id
+
     saveUser(db: Knex, data: any) {
         return db('users')
             .insert(data);
@@ -19,6 +16,11 @@ export class UsersModel {
     info(db: Knex, id: number) {
         return db('users')
             .where('id', id)
+    }
+
+    findUsername(db: Knex, username: string) {
+        return db('users')
+            .where('username', username)
     }
 
     delete(db: Knex, id: number) {
