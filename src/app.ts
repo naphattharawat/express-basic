@@ -8,8 +8,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config();
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var titlesRouter = require('./routes/titles');
+
+
 var bodyParser = require('body-parser');
 // import Knex = require('knex');
 var app = express();
@@ -60,6 +64,7 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/titles', titlesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {
