@@ -2,10 +2,14 @@
 
 var express = require('express');
 import { NextFunction, Request, Response } from "express";
-import MySqlConnectionConfig  from 'knex';
+import MySqlConnectionConfig from 'knex';
 var createError = require('http-errors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+
+import { JwtModel } from "./model/jwt";
+const jwtModel = new JwtModel();
+
 var logger = require('morgan');
 require('dotenv').config();
 
@@ -63,9 +67,33 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
   next();
 })
 
+
+const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
+  let token: any;
+  if (req.headers.authorization && req.headers.authorization.split(" ")[0] == 'Bearer') {
+    token = req.headers.authorization.split(" ")[1];
+  } else {
+    token = req.query.token;
+  }
+
+  if (token) {
+    const decoded = await jwtModel.verify(token);
+    if (decoded) {
+      req.decoded = decoded;
+      next();
+    } else {
+      res.send({ ok: false, error: 'Unauthorized' });
+    }
+  } else {
+    res.send({ ok: false, error: 'Unauthorized' });
+  }
+}
+
+
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/titles', titlesRouter);
+app.use('/users', checkAuth, usersRouter);
+app.use('/titles', checkAuth,titlesRouter);
 app.use('/login', loginRouter);
 
 // catch 404 and forward to error handler

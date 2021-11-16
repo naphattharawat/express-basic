@@ -5,6 +5,9 @@ import { LoginModel } from '../model/login';
 const loginModel = new LoginModel();
 var CryptoJS = require("crypto-js");
 
+import { JwtModel } from '../model/jwt';
+const jwtModel = new JwtModel();
+
 router.post('/', async function (req: Request, res: Response) {
     try {
         const username = req.body.username;
@@ -12,10 +15,15 @@ router.post('/', async function (req: Request, res: Response) {
         const users: any = await loginModel.findUsername(req.db, username);
         if (users.length) {
             const hash = CryptoJS.MD5(password).toString();
-            if(users[0].password == hash){
-                res.send({ok:true});
-            } else{
-                res.send({ok:false,error:'รหัสผ่านไม่ถูกต้อง'});
+            if (users[0].password == hash) {
+                const payload = {
+                    id: users[0].id,
+                    first_name: users[0].first_name
+                }
+                const token = await jwtModel.sign(payload);
+                res.send({ ok: true, token: token });
+            } else {
+                res.send({ ok: false, error: 'รหัสผ่านไม่ถูกต้อง' });
             }
         } else {
             res.send({ ok: false, error: 'ไม่พบ username' });
