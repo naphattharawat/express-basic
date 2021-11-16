@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { UsersModel } from "../model/users";
 const usersModel = new UsersModel();
-
+var CryptoJS = require("crypto-js");
 var express = require('express');
 var router = express.Router();
 
@@ -30,13 +30,19 @@ router.get('/info', async function (req: Request, res: Response, next: NextFunct
 router.post('/', async function (req: Request, res: Response, next: NextFunction) {
     try {
         const body = req.body;
-        if (body.first_name && body.last_name) {
-            const rs: any = await usersModel.saveUser(req.db, body);
+        if (body.first_name && body.last_name && body.password) {
+            const obj :any = {
+                first_name:body.first_name,
+                last_name:body.last_name,
+                password: CryptoJS.MD5(body.password).toString()
+            }
+            const rs: any = await usersModel.saveUser(req.db, obj);
             res.send({ ok: true, rows: rs })
         } else {
             res.send({ ok: false, error: 'ไม่พบ parameter' })
         }
     } catch (error) {
+        console.log(error);
         res.send({ ok: false, error: error })
     }
 });
