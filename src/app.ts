@@ -9,7 +9,7 @@ var cookieParser = require('cookie-parser');
 
 import { JwtModel } from "./model/jwt";
 const jwtModel = new JwtModel();
-
+const cors = require('cors');
 var logger = require('morgan');
 require('dotenv').config();
 
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.use(cors());
 
 const connection: any = {
   host: process.env.DB_HOST,
@@ -92,8 +92,8 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
 
 
 app.use('/', indexRouter);
-app.use('/users', checkAuth, usersRouter);
-app.use('/titles', checkAuth,titlesRouter);
+app.use('/users', usersRouter);
+app.use('/titles',titlesRouter);
 app.use('/login', loginRouter);
 
 // catch 404 and forward to error handler
