@@ -3,7 +3,7 @@ export class UsersModel {
 
     getList(db: Knex) {
         return db('users as u')
-        .select('u.id', 'u.first_name',
+        .select('u.id', 'u.first_name', 'u.username',
         'u.last_name', 'u.title_id', 't.name as title_name')
         .join('titles as t', 't.id', 'u.title_id')
     }
